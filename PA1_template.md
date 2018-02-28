@@ -1,4 +1,4 @@
-knit2html(
+
 ---
 title: "Reproducible Research Project"
 output: html_document
@@ -50,13 +50,7 @@ summary(dailysteps$steps)
 
 ```r
 library(ggplot2)
-```
 
-```
-## Warning: package 'ggplot2' was built under R version 3.4.2
-```
-
-```r
 dailystepplot <- ggplot(data =  dailysteps, aes(x= date, y= steps))  +            
     geom_bar(stat="identity", position="dodge") + 
     ggtitle("Total Number of Steps Per Day") +
@@ -66,7 +60,7 @@ dailystepplot <- ggplot(data =  dailysteps, aes(x= date, y= steps))  +
 dailystepplot
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
+![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-1.png)
 
 
 ### Calculate and report the mean and median of the total number of steps taken per day
@@ -103,7 +97,7 @@ qplot(interval, steps, data = steptime) + geom_line() +
     ggtitle("Mean Number of Steps Per 5 Minute Interval") 
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20-1.png)
 
 
 ### Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
@@ -196,7 +190,7 @@ cleandailyplot <- ggplot(data = cleandailysteps, aes(x= date, y= steps))  +
 cleandailyplot
 ```
 
-![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png)
+![plot of chunk unnamed-chunk-24](figure/unnamed-chunk-24-1.png)
 
 
 ### Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
@@ -287,13 +281,7 @@ table(cleandata$day)
 
 ```r
 library(lattice)
-```
 
-```
-## Warning: package 'lattice' was built under R version 3.4.2
-```
-
-```r
 steptime <- aggregate(steps ~ interval + day, data = cleandata, mean)
 
 xyplot(steptime$steps ~ steptime$interval | steptime$day, 
@@ -301,5 +289,4 @@ xyplot(steptime$steps ~ steptime$interval | steptime$day,
     xlab = "Interval", ylab = "Number of steps")
 ```
 
-![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
-)
+![plot of chunk unnamed-chunk-30](figure/unnamed-chunk-30-1.png)
