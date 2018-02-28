@@ -1,4 +1,4 @@
-
+knit2html(
 ---
 title: "Reproducible Research Project"
 output: html_document
@@ -6,13 +6,24 @@ output: html_document
 
 
 # loading and prepocessing the data
-```{r, echo = TRUE} 
+
+```r
 # download file from web
 download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip", destfile = "activity.zip", mode="wb")
 # unzip data and read 
 unzip("activity.zip")
 stepdata <- read.csv("activity.csv", header = TRUE)
 head(stepdata)
+```
+
+```
+##   steps       date interval
+## 1    NA 2012-10-01        0
+## 2    NA 2012-10-01        5
+## 3    NA 2012-10-01       10
+## 4    NA 2012-10-01       15
+## 5    NA 2012-10-01       20
+## 6    NA 2012-10-01       25
 ```
 
 
@@ -23,17 +34,29 @@ head(stepdata)
 
 
 ### Calculate the total number of steps taken each day
-```{r, echo = TRUE}
+
+```r
 dailysteps <- aggregate(steps ~ date, data = stepdata, sum)
 summary(dailysteps$steps)
 ```
 
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##      41    8841   10765   10766   13294   21194
+```
+
 
 ### Make a Histogram of the total number of steps taken each day
-```{r, echo = TRUE}
 
+```r
 library(ggplot2)
+```
 
+```
+## Warning: package 'ggplot2' was built under R version 3.4.2
+```
+
+```r
 dailystepplot <- ggplot(data =  dailysteps, aes(x= date, y= steps))  +            
     geom_bar(stat="identity", position="dodge") + 
     ggtitle("Total Number of Steps Per Day") +
@@ -43,13 +66,25 @@ dailystepplot <- ggplot(data =  dailysteps, aes(x= date, y= steps))  +
 dailystepplot
 ```
 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
+
 
 ### Calculate and report the mean and median of the total number of steps taken per day
-```{r, echo = TRUE}
 
+```r
 mean(dailysteps$steps) 
-median(dailysteps$steps) 
+```
 
+```
+## [1] 10766.19
+```
+
+```r
+median(dailysteps$steps) 
+```
+
+```
+## [1] 10765
 ```
 
 
@@ -60,18 +95,34 @@ median(dailysteps$steps)
 
 
 ### Make a time series plot of the 5-minute interval and the average number of steps taken, averaged across all days 
-```{r, echo = TRUE}
+
+```r
 steptime <- aggregate(steps ~ interval, data = stepdata, mean)
 
 qplot(interval, steps, data = steptime) + geom_line() +
     ggtitle("Mean Number of Steps Per 5 Minute Interval") 
-
 ```
+
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
 
 
 ### Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
-```{r, echo = TRUE}
+
+```r
 tail(steptime[order(steptime$steps),])
+```
+
+```
+##     interval    steps
+## 101      820 171.1509
+## 103      830 177.3019
+## 106      845 179.5660
+## 107      850 183.3962
+## 105      840 195.9245
+## 104      835 206.1698
+```
+
+```r
 # interval 835 has greatest amount of steps (206.2)
 ```
 
@@ -84,10 +135,18 @@ tail(steptime[order(steptime$steps),])
 
 
 ### Calculate and report the total number of missing values in the dataset 
-```{r, echo = TRUE}
+
+```r
 totaldata <- read.csv("activity.csv", header = TRUE, na.strings = "NA")
 valuesonly <-na.omit(totaldata)
 nrow(valuesonly) - nrow(totaldata)
+```
+
+```
+## [1] -2304
+```
+
+```r
 # 2304 missing values in the dataset.
 ```
 
@@ -95,7 +154,8 @@ nrow(valuesonly) - nrow(totaldata)
 ### Devise a strategy for filling in all of the missing values in the dataset. 
 
 ### Create a new dataset that is equal to the original dataset but with the missing data filled in.
-```{r, echo = TRUE}
+
+```r
 meansteps <- aggregate(steps ~ interval, data = stepdata, mean)
 cleandata <- totaldata 
 for (i in 1:nrow(cleandata)) {
@@ -105,12 +165,26 @@ for (i in 1:nrow(cleandata)) {
 }
 
 head(cleandata)
+```
+
+```
+##       steps       date interval
+## 1 1.7169811 2012-10-01        0
+## 2 0.3396226 2012-10-01        5
+## 3 0.1320755 2012-10-01       10
+## 4 0.1509434 2012-10-01       15
+## 5 0.0754717 2012-10-01       20
+## 6 2.0943396 2012-10-01       25
+```
+
+```r
 ## no longer see NA values in head in correspondin intervals (see first table)
 ```
 
 
 ### Make a histogram of the total number of steps taken each day.
-```{r, echo = TRUE}
+
+```r
 cleandailysteps <- aggregate(steps ~ date, data = cleandata, sum)
 
 cleandailyplot <- ggplot(data = cleandailysteps, aes(x= date, y= steps))  +         
@@ -122,28 +196,52 @@ cleandailyplot <- ggplot(data = cleandailysteps, aes(x= date, y= steps))  +
 cleandailyplot
 ```
 
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png)
+
 
 ### Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
-```{r, echo = TRUE}
 
+```r
 mean(cleandailysteps$steps) #Mean steps per = 10766
-median(cleandailysteps$steps) #Median steps per day = 10766
+```
 
+```
+## [1] 10766.19
+```
+
+```r
+median(cleandailysteps$steps) #Median steps per day = 10766
+```
+
+```
+## [1] 10766.19
 ```
 #### These values do not have any real significant differences from values of first part of assignment.
 #### Imputing missing data did not impact the minimum or maximum steps per day, but it did have an impact on it's distribution.
 ##### The imputed data has quartile values closer to the mean, as you would suspect following the law of large numbers (imputing created a larger dataset)
 
 ### Imputed data
-```{r, echo = TRUE}
+
+```r
 summary(cleandailysteps$steps) 
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##      41    9819   10766   10766   12811   21194
 ```
 
 
 ### Original data with missing values
-```{r, echo = TRUE}
+
+```r
 summary(dailysteps$steps) 
-```         
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##      41    8841   10765   10766   13294   21194
+```
 
 
 
@@ -153,7 +251,8 @@ summary(dailysteps$steps)
 
 
 ### Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
-```{r, echo = TRUE}
+
+```r
 cleandata$date <- as.Date(cleandata$date, format = "%Y-%m-%d")
 
 cleandata$day <- factor(weekdays(cleandata$date))
@@ -162,19 +261,45 @@ levels(cleandata$day) <- list(weekday = c("Monday", "Tuesday", "Wednesday", "Thu
                               weekend = c("Saturday", "Sunday"))
 head(cleandata)
 ```
-```{r, echo = TRUE}
+
+```
+##       steps       date interval     day
+## 1 1.7169811 2012-10-01        0 weekday
+## 2 0.3396226 2012-10-01        5 weekday
+## 3 0.1320755 2012-10-01       10 weekday
+## 4 0.1509434 2012-10-01       15 weekday
+## 5 0.0754717 2012-10-01       20 weekday
+## 6 2.0943396 2012-10-01       25 weekday
+```
+
+```r
 table(cleandata$day)
+```
+
+```
+## 
+## weekday weekend 
+##   12960    4608
 ```
 
 
 ### Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
-```{r, echo = TRUE}
-library(lattice)
 
+```r
+library(lattice)
+```
+
+```
+## Warning: package 'lattice' was built under R version 3.4.2
+```
+
+```r
 steptime <- aggregate(steps ~ interval + day, data = cleandata, mean)
 
 xyplot(steptime$steps ~ steptime$interval | steptime$day, 
     layout = c(1, 2), type = "l", main = "Average daily steps, Weekend VS. Weekday (imputed data)",
     xlab = "Interval", ylab = "Number of steps")
- 
 ```
+
+![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
+)
